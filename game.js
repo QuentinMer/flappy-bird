@@ -68,6 +68,41 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         }
     }
+    // Événements tactiles pour smartphones
+document.addEventListener("touchstart", (event) => {
+    if (isGameOver) {
+        restartGame(); // Relance le jeu
+    } else {
+        if (!gameStarted) {
+            gameStarted = true;
+            instructions.style.display = 'none'; // Masque les instructions
+            birdY = gameCanvas.clientHeight / 2;
+            birdVelocity = 0;
+            isGameOver = false;
+
+            // Réinitialisation des tuyaux
+            pipes.forEach((pipe, index) => {
+                let pipeX = gameCanvas.clientWidth + index * pipeSpacing;
+                pipe.style.left = `${pipeX}px`;
+
+                let pipeHeight = generateRandomPipeHeight();
+                let pipeTopHeight = pipeHeight;
+                let pipeBottomHeight = gameCanvas.clientHeight - pipeTopHeight - pipeGap;
+
+                if (pipe.classList.contains("top")) {
+                    pipe.style.height = `${pipeTopHeight}px`;
+                    pipe.style.top = "0";
+                } else {
+                    pipe.style.height = `${pipeBottomHeight}px`;
+                    pipe.style.top = `${pipeTopHeight + pipeGap}px`;
+                }
+                pipe.passed = false;
+            });
+        } else {
+            birdVelocity = jump; // Fait sauter l'oiseau
+        }
+    }
+});
 
     function generateRandomPipeHeight() {
         const minHeight = 50;
