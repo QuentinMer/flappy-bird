@@ -96,3 +96,9 @@ body {
 #bestScore{
     color: lightgreen;
 }
+@media (max-width: 600px) { /* Ajuste la largeur selon tes besoins */
+    .pipe {
+        margin-left: 100px; /* Ajuste l'espacement à gauche */
+        margin-right: 100px; /* Ajuste l'espacement à droite */
+    }
+}

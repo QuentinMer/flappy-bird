@@ -6,125 +6,89 @@ document.addEventListener("DOMContentLoaded", () => {
     const scoreElement = document.getElementById('score');
     const gameOverDiv = document.getElementById('gameOver');
     const bestScoreElement = document.getElementById('bestScore');
-    const instructions = document.getElementById('instructions');
+    const instructions = document.getElementById('instructions'); 
 
     // Initialisation des variables
-    let birdY = gameCanvas.clientHeight / 2;
-    let birdVelocity = 0;
-    let score = 0;
-    let bestScore = localStorage.getItem('bestScore') ? parseInt(localStorage.getItem('bestScore')) : 0;
-    const gravity = 0.5;
-    const jump = -8;
-    let isGameOver = false;
-    let gameStarted = false;
-    const pipeSpeed = 2;
-    const pipeGap = 200;
-    const pipeSpacing = 250;
+    let birdY = gameCanvas.clientHeight / 2; // Position initiale de l'oiseau
+    let birdVelocity = 0; // Vitesse de l'oiseau
+    let score = 0; // Score du joueur
+    let bestScore = localStorage.getItem('bestScore') ? parseInt(localStorage.getItem('bestScore')) : 0; // Meilleur score enregistré
+    const gravity = 0.6; // Gravité qui attire l'oiseau vers le bas
+    const jump = -10; // Vitesse de montée de l'oiseau
+    let isGameOver = false; // Statut du jeu
+    let gameStarted = false; // Statut de démarrage du jeu
+    const pipeSpeed = 2; // Vitesse de déplacement des tuyaux
+    const pipeGap = 200; // Espace entre le tuyau du haut et du bas
+    const pipeSpacing = 250; // Espacement entre les tuyaux
 
     // Création des objets Audio pour les sons
     const pointSound = new Audio('./soundsEffect/point.mp3');
     const dieSound = new Audio('./soundsEffect/die.wav');
-    const musicGame = document.getElementById('musicGame');
+    const musicGame = document.getElementById("musicGame");
 
     // Réglage des volumes
-    musicGame.volume = 0.3; // Volume de la musique de fond
+    musicGame.volume = 0.6; 
     pointSound.volume = 1.0; 
     dieSound.volume = 1.0; 
 
     function handleKeyDown(event) {
         if (event.code === "ArrowUp" && !isGameOver && gameStarted) {
-            birdVelocity = jump;
+            birdVelocity = jump; // Fait monter l'oiseau
         }
 
         if (event.code === "Space") {
             if (isGameOver) {
-                restartGame();
+                restartGame(); // Relance le jeu
             } else if (!gameStarted) {
-                gameStarted = true;
-                instructions.style.display = 'none'; // Masque les instructions
+                gameStarted = true; // Démarre le jeu
+                instructions.style.display = 'none'; // Cache les instructions
+                birdY = gameCanvas.clientHeight / 2; // Réinitialise la position de l'oiseau
+                birdVelocity = 0; // Réinitialise la vitesse de l'oiseau
+                isGameOver = false; // Indique que le jeu est en cours
+
                 musicGame.play(); // Démarre la musique de fond
-                birdY = gameCanvas.clientHeight / 2;
-                birdVelocity = 0;
-                isGameOver = false;
 
                 // Réinitialisation des tuyaux
                 pipes.forEach((pipe, index) => {
                     let pipeX = gameCanvas.clientWidth + index * pipeSpacing;
                     pipe.style.left = `${pipeX}px`;
 
-                    let pipeHeight = generateRandomPipeHeight();
-                    let pipeTopHeight = pipeHeight;
-                    let pipeBottomHeight = gameCanvas.clientHeight - pipeTopHeight - pipeGap;
-
+                    let pipeHeight = generateRandomPipeHeight(); // Hauteur du tuyau supérieur
                     if (pipe.classList.contains("top")) {
-                        pipe.style.height = `${pipeTopHeight}px`;
+                        pipe.style.height = `${pipeHeight}px`;
                         pipe.style.top = "0";
                     } else {
+                        let pipeBottomHeight = gameCanvas.clientHeight - pipeHeight - pipeGap; // Hauteur du tuyau inférieur
                         pipe.style.height = `${pipeBottomHeight}px`;
-                        pipe.style.top = `${pipeTopHeight + pipeGap}px`;
+                        pipe.style.top = `${pipeHeight + pipeGap}px`;
                     }
-                    pipe.passed = false;
+                    pipe.passed = false; // Réinitialise le statut de passage
                 });
             }
         }
     }
-    // Événements tactiles pour smartphones
-document.addEventListener("touchstart", (event) => {
-    if (isGameOver) {
-        restartGame(); // Relance le jeu
-    } else {
-        if (!gameStarted) {
-            gameStarted = true;
-            instructions.style.display = 'none'; // Masque les instructions
-            birdY = gameCanvas.clientHeight / 2;
-            birdVelocity = 0;
-            isGameOver = false;
-
-            // Réinitialisation des tuyaux
-            pipes.forEach((pipe, index) => {
-                let pipeX = gameCanvas.clientWidth + index * pipeSpacing;
-                pipe.style.left = `${pipeX}px`;
-
-                let pipeHeight = generateRandomPipeHeight();
-                let pipeTopHeight = pipeHeight;
-                let pipeBottomHeight = gameCanvas.clientHeight - pipeTopHeight - pipeGap;
-
-                if (pipe.classList.contains("top")) {
-                    pipe.style.height = `${pipeTopHeight}px`;
-                    pipe.style.top = "0";
-                } else {
-                    pipe.style.height = `${pipeBottomHeight}px`;
-                    pipe.style.top = `${pipeTopHeight + pipeGap}px`;
-                }
-                pipe.passed = false;
-            });
-        } else {
-            birdVelocity = jump; // Fait sauter l'oiseau
-        }
-    }
-});
 
     function generateRandomPipeHeight() {
-        const minHeight = 50;
-        const maxHeight = gameCanvas.clientHeight - pipeGap - minHeight;
-        return Math.random() * (maxHeight - minHeight) + minHeight;
+        const minHeight = 50; // Hauteur minimum d'un tuyau
+        const maxHeight = gameCanvas.clientHeight - pipeGap - minHeight; // Hauteur maximum d'un tuyau
+        return Math.random() * (maxHeight - minHeight) + minHeight; // Génère une hauteur aléatoire
     }
 
     function updateScore() {
-        scoreElement.innerText = `Score: ${score}`;
+        scoreElement.innerText = `Score: ${score}`; // Met à jour l'affichage du score
     }
 
     function update() {
-        if (isGameOver || !gameStarted) return;
+        if (isGameOver || !gameStarted) return; // Sort de la fonction si le jeu est terminé ou pas commencé
 
-        birdVelocity += gravity;
-        birdY += birdVelocity;
+        birdVelocity += gravity; // Applique la gravité
+        birdY += birdVelocity; // Met à jour la position verticale de l'oiseau
 
         // Change l'image de l'oiseau en fonction de sa direction
         if (birdVelocity < 0) {
-            bird.style.backgroundImage = 'url("./images/Bird-2.png")';
+            bird.style.backgroundImage = 'url("./images/Bird-2.png")'; // Oiseau en montée
         } else {
-            bird.style.backgroundImage = 'url("./images/Bird.png")';
+            bird.style.backgroundImage = 'url("./images/Bird.png")'; // Oiseau en descente
         }
 
         // Empêche l'oiseau de sortir par le bas du canvas
@@ -140,47 +104,45 @@ document.addEventListener("touchstart", (event) => {
             birdVelocity = 0; // Arrête l'oiseau
             gameOver(); // Termine le jeu
         }
-
-        bird.style.top = `${birdY}px`;
+        bird.style.top = `${birdY}px`; // Met à jour la position de l'oiseau
 
         // Parcourt chaque tuyau
         pipes.forEach((pipe) => {
-            let pipeX = parseFloat(window.getComputedStyle(pipe).left) || 0;
-            pipeX -= pipeSpeed;
+            let pipeX = parseFloat(window.getComputedStyle(pipe).left) || 0; // Position actuelle du tuyau
+            pipeX -= pipeSpeed; // Déplace le tuyau vers la gauche
 
             // Vérifie si l'oiseau a franchi un tuyau
             if (pipeX + pipe.offsetWidth < bird.offsetLeft && !pipe.passed) {
-                score++;
-                pipe.passed = true;
-                updateScore();
+                score++; // Augmente le score
+                pipe.passed = true; // Indique que le tuyau a été franchi
+                updateScore(); // Met à jour le score affiché
                 pointSound.play(); // Joue le son quand un tuyau est franchi
             }
 
             // Réinitialise les tuyaux lorsqu'ils sortent de l'écran
             if (pipeX < -pipe.offsetWidth) {
-                pipeX = gameCanvas.clientWidth + pipeSpacing;
-                let pipeHeight = generateRandomPipeHeight();
-                let pipeTopHeight = pipeHeight;
-                let pipeBottomHeight = gameCanvas.clientHeight - pipeTopHeight - pipeGap;
+                pipeX = gameCanvas.clientWidth + pipeSpacing; // Replace le tuyau à droite
+                let pipeHeight = generateRandomPipeHeight(); // Génère une nouvelle hauteur de tuyau
+                let pipeBottomHeight = gameCanvas.clientHeight - pipeHeight - pipeGap;
 
                 if (pipe.classList.contains("top")) {
-                    pipe.style.height = `${pipeTopHeight}px`;
-                    pipe.style.top = "0";
+                    pipe.style.height = `${pipeHeight}px`;
+                    pipe.style.top = "0"; // Positionne le tuyau supérieur
                 } else {
                     pipe.style.height = `${pipeBottomHeight}px`;
-                    pipe.style.top = `${pipeTopHeight + pipeGap}px`;
+                    pipe.style.top = `${pipeHeight + pipeGap}px`; // Positionne le tuyau inférieur
                 }
-                pipe.passed = false;
+                pipe.passed = false; // Réinitialise le statut de passage
             }
 
-            pipe.style.left = `${pipeX}px`;
-            checkCollision(bird, pipe);
+            pipe.style.left = `${pipeX}px`; // Met à jour la position du tuyau
+            checkCollision(bird, pipe); // Vérifie la collision
         });
     }
 
     function checkCollision(bird, pipe) {
-        const birdRect = bird.getBoundingClientRect();
-        const pipeRect = pipe.getBoundingClientRect();
+        const birdRect = bird.getBoundingClientRect(); // Récupère les dimensions de l'oiseau
+        const pipeRect = pipe.getBoundingClientRect(); // Récupère les dimensions du tuyau
 
         // Vérifie si l'oiseau touche un tuyau
         if (
@@ -189,15 +151,15 @@ document.addEventListener("touchstart", (event) => {
             birdRect.top < pipeRect.bottom &&
             birdRect.bottom > pipeRect.top
         ) {
-            gameOver();
+            gameOver(); // Si collision, termine le jeu
         }
     }
 
     function gameOver() {
-        isGameOver = true;
-        bird.style.backgroundImage = 'url("./images/Bird.png")';
-        gameOverDiv.classList.remove('hidden');
-        bestScoreElement.innerText = `${Math.max(score, bestScore)}`;
+        isGameOver = true; // Met à jour le statut du jeu
+        bird.style.backgroundImage = 'url("./images/Bird.png")'; // Réinitialise l'image de l'oiseau
+        gameOverDiv.classList.remove('hidden'); // Affiche l'écran de game over
+        bestScoreElement.innerText = `${Math.max(score, bestScore)}`; // Affiche le meilleur score
 
         // Joue le son de la fin de jeu
         dieSound.play();
@@ -205,66 +167,69 @@ document.addEventListener("touchstart", (event) => {
         // Met à jour le meilleur score dans le stockage local
         if (score > bestScore) {
             bestScore = score;
-            localStorage.setItem('bestScore', bestScore);
+            localStorage.setItem('bestScore', bestScore); // Enregistre le meilleur score
         }
+
+        // Cache les instructions initialement
+        instructions.style.display = 'none'; 
     }
 
     function restartGame() {
-        gameStarted = false;
-        isGameOver = false;
-        birdY = gameCanvas.clientHeight / 2;
-        birdVelocity = 0;
-        score = 0;
-        updateScore();
-        gameOverDiv.classList.add('hidden');
-    
-        // Réaffiche les instructions
-        instructions.style.display = 'flex'; // Ou 'block' selon ton style
-    
+        gameStarted = false; // Le jeu n'est plus lancé
+        isGameOver = false; // Indique que le jeu n'est pas terminé
+        birdY = gameCanvas.clientHeight / 2; // Réinitialise la position de l'oiseau
+        birdVelocity = 0; // Réinitialise la vitesse de l'oiseau
+        score = 0; // Réinitialise le score
+        updateScore(); // Met à jour l'affichage du score
+        gameOverDiv.classList.add('hidden'); // Cache l'écran de game over
+
+        // Réinitialisation des tuyaux
         pipes.forEach((pipe, index) => {
             let pipeX = gameCanvas.clientWidth + index * pipeSpacing;
             pipe.style.left = `${pipeX}px`;
-    
-            let pipeHeight = generateRandomPipeHeight();
-            let pipeTopHeight = pipeHeight;
-            let pipeBottomHeight = gameCanvas.clientHeight - pipeTopHeight - pipeGap;
-    
+
+            let pipeHeight = generateRandomPipeHeight(); // Hauteur du tuyau supérieur
             if (pipe.classList.contains("top")) {
-                pipe.style.height = `${pipeTopHeight}px`;
-                pipe.style.top = "0";
+                pipe.style.height = `${pipeHeight}px`;
+                pipe.style.top = "0"; // Positionne le tuyau supérieur
             } else {
+                let pipeBottomHeight = gameCanvas.clientHeight - pipeHeight - pipeGap; // Hauteur du tuyau inférieur
                 pipe.style.height = `${pipeBottomHeight}px`;
-                pipe.style.top = `${pipeTopHeight + pipeGap}px`;
+                pipe.style.top = `${pipeHeight + pipeGap}px`; // Positionne le tuyau inférieur
             }
-            pipe.passed = false;
+            pipe.passed = false; // Réinitialise le statut de passage
         });
+
+        // Affiche les instructions après un délai
+        setTimeout(() => {
+            instructions.style.display = 'block'; // Affiche les instructions
+        }, 500); // Attendre 500 ms après le game over
     }
 
-    document.addEventListener("keydown", handleKeyDown);
+    document.addEventListener("keydown", handleKeyDown); // Ajoute un écouteur d'événements pour les touches
 
+    // Boucle de jeu
     function gameLoop() {
-        update();
-        requestAnimationFrame(gameLoop);
+        update(); // Met à jour le jeu
+        requestAnimationFrame(gameLoop); // Demande une nouvelle animation
     }
+
+    gameLoop(); // Lance la boucle de jeu
 
     // Initialisation des tuyaux
     pipes.forEach((pipe, index) => {
         let pipeX = gameCanvas.clientWidth + index * pipeSpacing;
         pipe.style.left = `${pipeX}px`;
 
-        let pipeHeight = generateRandomPipeHeight();
-        let pipeTopHeight = pipeHeight;
-        let pipeBottomHeight = gameCanvas.clientHeight - pipeTopHeight - pipeGap;
-
+        let pipeHeight = generateRandomPipeHeight(); // Hauteur du tuyau supérieur
         if (pipe.classList.contains("top")) {
-            pipe.style.height = `${pipeTopHeight}px`;
-            pipe.style.top = "0";
+            pipe.style.height = `${pipeHeight}px`;
+            pipe.style.top = "0"; // Positionne le tuyau supérieur
         } else {
+            let pipeBottomHeight = gameCanvas.clientHeight - pipeHeight - pipeGap; // Hauteur du tuyau inférieur
             pipe.style.height = `${pipeBottomHeight}px`;
-            pipe.style.top = `${pipeTopHeight + pipeGap}px`;
+            pipe.style.top = `${pipeHeight + pipeGap}px`; // Positionne le tuyau inférieur
         }
-        pipe.passed = false;
+        pipe.passed = false; // Réinitialise le statut de passage
     });
-
-    gameLoop();
 });
