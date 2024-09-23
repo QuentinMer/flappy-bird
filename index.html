@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Flappy Bird</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400..700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <audio id="musicGame" src="soundsEffect/musicGame.mp3" loop></audio>
+    <div id="instructions">
+        <div class="position">
+            <p>Commandes:</p>
+            <p>↑ Flèche du haut : faire monter l'oiseau</p>
+            <p>Barre d'espace : lancer le jeu</p>
+        </div>
+    </div>
+    </div>
+    <div id="score">Score: 0</div>
+    <div id="gameOver" class="hidden">
+        <h2>Game Over</h2>
+        <div class="bestScore">
+        <p>Meilleur score:</p>
+        <p id="bestScore"></p>
+    </div>
+    </div>
+    <div id="gameCanvas">
+      <div id="bird"></div>
+      <div class="pipe top" id="pipe1"></div>
+      <div class="pipe bottom" id="pipe2"></div>
+      <div class="pipe top" id="pipe3"></div>
+      <div class="pipe bottom" id="pipe4"></div>
+      <div class="pipe top" id="pipe5"></div>
+      <div class="pipe bottom" id="pipe6"></div>
+      <div class="pipe top" id="pipe7"></div>
+      <div class="pipe bottom" id="pipe8"></div>
+    </div>
+    <script src="game.js"></script>
+  </body>
+</html>

@@ -1,0 +1,98 @@
+body {
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background-image: url('./images/background-img.png');
+    background-size: cover;
+    background-repeat: no-repeat;
+}
+
+#gameCanvas {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+}
+
+#bird {
+    position: absolute;
+    top: 50%;
+    left: 10%;
+    width: 40px;
+    height: 30px;
+    background-image: url('./images/Bird.png');
+    background-size: cover;
+    background-repeat: no-repeat;
+}
+
+.pipe {
+    position: absolute;
+    right: 0;
+    width: 60px;
+    border: 2px solid black;
+}
+
+.pipe {
+    top: 0;
+    /* Positionne le tuyau du haut en haut du canvas */
+    background: linear-gradient(to right, green, rgb(10, 229, 10));
+
+}
+#instructions {
+    position: absolute;
+    opacity: 0.8;
+    font-family: "Pixelify Sans", sans-serif;
+    color: whitesmoke;
+    font-size: 35px;
+    top: 20%;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: black;
+    padding: 10px;
+    border: 1px solid #000;
+    border-radius: 5px;
+    z-index: 10; /* S'assure que la div est au-dessus des autres éléments */
+}
+.position{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+#score {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    font-size: 90px;
+    font-family: "Pixelify Sans", sans-serif;
+    color: white;
+    z-index: 2;
+    opacity: 0.7;
+}
+
+.hidden {
+    display: none;
+}
+
+#gameOver {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: rgba(0, 0, 0, 0.8);
+    font-family: "Pixelify Sans", sans-serif;
+    font-size: 60px;
+    color: white;
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+    z-index: 3;
+}
+.bestScore{
+    display: flex;
+    flex-direction: row;
+}
+#bestScore{
+    color: lightgreen;
+}
