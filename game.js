@@ -83,6 +83,30 @@ document.addEventListener("DOMContentLoaded", () => {
         const maxHeight = gameCanvas.clientHeight - pipeGap - minHeight; // Hauteur maximum d'un tuyau
         return Math.random() * (maxHeight - minHeight) + minHeight; // Génère une hauteur aléatoire
     }
+    
+    function resetPipes() {
+        pipes.forEach((pipe, index) => {
+            let pipeX = gameCanvas.clientWidth + index * pipeSpacing;
+            pipe.style.left = `${pipeX}px`;
+    
+            // Génération de la hauteur du tuyau supérieur
+            let pipeHeight = generateRandomPipeHeight(); 
+    
+            // Assurer qu'il y a un espacement suffisant
+            if (pipe.classList.contains("top")) {
+                pipe.style.height = `${pipeHeight}px`;
+                pipe.style.top = "0"; // Positionne le tuyau supérieur
+            } else {
+                let pipeBottomHeight = gameCanvas.clientHeight - pipeHeight - pipeGap - (bird.offsetHeight * 2); // Ajuste pour l'espacement
+                pipe.style.height = `${pipeBottomHeight}px`;
+                pipe.style.top = `${pipeHeight + pipeGap}px`; // Positionne le tuyau inférieur
+            }
+            pipe.passed = false; // Réinitialise le statut de passage
+        });
+    }
+    
+    // Appelle resetPipes() lors de l'initialisation du jeu
+    resetPipes();
 
     function updateScore() {
         scoreElement.innerText = `Score: ${score}`; // Met à jour l'affichage du score
