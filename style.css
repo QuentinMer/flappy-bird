@@ -18,11 +18,12 @@ body {
     position: absolute;
     top: 50%;
     left: 10%;
-    width: 40px;
-    height: 30px;
+    width: 80px; /* Ajuste ici */
+    height: 70px; /* Ajuste ici */
     background-image: url('./images/Bird.png');
-    background-size: cover;
+    background-size: contain; /* Changez à contain si l'image est coupée */
     background-repeat: no-repeat;
+    background-position: center; /* Centrez l'image */
 }
 
 .pipe {

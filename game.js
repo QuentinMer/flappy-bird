@@ -78,26 +78,38 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
-    function generateRandomPipeHeight() {
+    function generateRandomPipeHeight(lastHeight = null) {
         const minHeight = 50; // Hauteur minimum d'un tuyau
         const maxHeight = gameCanvas.clientHeight - pipeGap - minHeight; // Hauteur maximum d'un tuyau
-        return Math.random() * (maxHeight - minHeight) + minHeight; // Génère une hauteur aléatoire
+    
+        // Génère une hauteur aléatoire
+        let height = Math.random() * (maxHeight - minHeight) + minHeight;
+    
+        // Si une dernière hauteur est fournie, assure que la nouvelle hauteur est suffisamment éloignée
+        if (lastHeight !== null) {
+            height = Math.max(minHeight, Math.min(height, lastHeight - pipeGap + minHeight));
+        }
+    
+        return height;
     }
     
     function resetPipes() {
+        let lastPipeHeight = null; // Variable pour stocker la hauteur du dernier tuyau
+    
         pipes.forEach((pipe, index) => {
             let pipeX = gameCanvas.clientWidth + index * pipeSpacing;
             pipe.style.left = `${pipeX}px`;
     
             // Génération de la hauteur du tuyau supérieur
-            let pipeHeight = generateRandomPipeHeight(); 
-    
-            // Assurer qu'il y a un espacement suffisant
             if (pipe.classList.contains("top")) {
+                let pipeHeight = generateRandomPipeHeight(lastPipeHeight);
                 pipe.style.height = `${pipeHeight}px`;
                 pipe.style.top = "0"; // Positionne le tuyau supérieur
+                lastPipeHeight = pipeHeight; // Met à jour la dernière hauteur
             } else {
-                let pipeBottomHeight = gameCanvas.clientHeight - pipeHeight - pipeGap - (bird.offsetHeight * 2); // Ajuste pour l'espacement
+                // Pour le tuyau inférieur, utilise la hauteur du tuyau supérieur
+                let pipeHeight = lastPipeHeight; // Utilise la hauteur du tuyau supérieur
+                let pipeBottomHeight = gameCanvas.clientHeight - pipeHeight - pipeGap; // Hauteur du tuyau inférieur
                 pipe.style.height = `${pipeBottomHeight}px`;
                 pipe.style.top = `${pipeHeight + pipeGap}px`; // Positionne le tuyau inférieur
             }
